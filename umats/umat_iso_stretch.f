@@ -58,11 +58,11 @@ c...  variables passed in for information
       integer ntens,ndi,nshr,nstatv,nprops,noel,npt,kstep,kinc
 
 c...  material properties
-      real*8  lam, mu, alpha, tcr, tmax, gam,
+      real*8  lam, mu, alpha, tcr, tmax, gam
 
 c...  local variables
       integer i,j,nitl
-      real*8  theg, theg_n, detf
+      real*8  theg, theg_n, detf, the
       real*8  fe(3,3), be(6), detfe, lnJe
       real*8  kg, phig, dkg, dphig, res, dres
       real*8  fac, cg(6)
@@ -74,15 +74,17 @@ c...  local variables
 c...  initialize material parameters 
       lam   = props(1)              ! lame constant
       mu    = props(2)              ! shear modulus
-      alpha = props(6)              ! growth rate
-      tcr   = props(3)              ! critical stretch
-      tmax  = props(4)              ! maximum growth
-      gam   = props(5)              ! exponential growth rate
+      alpha = props(3)              ! growth rate
+      tcr   = props(4)              ! critical stretch
+      tmax  = props(5)              ! maximum growth
+      gam   = props(6)              ! exponential growth rate
      
 c...  calculate determinant of deformation gradient
       detf = +dfgrd1(1,1)*(dfgrd1(2,2)*dfgrd1(3,3)-dfgrd1(2,3)*dfgrd1(3,2))
      #       -dfgrd1(1,2)*(dfgrd1(2,1)*dfgrd1(3,3)-dfgrd1(2,3)*dfgrd1(3,1))
      #       +dfgrd1(1,3)*(dfgrd1(2,1)*dfgrd1(3,2)-dfgrd1(2,2)*dfgrd1(3,1))
+
+      the=detf
 
 c...  obtain state variable history
       theg_n = statev(1)
@@ -92,7 +94,7 @@ c...  local newton iteration
 c...  ------------------------------------------------------------------
       nitl = 0
 
-      phig = detf/theg - tcr
+      phig = the/theg - tcr
 
       if (phig.gt.0) then
  200     continue      
@@ -100,7 +102,7 @@ c...  ------------------------------------------------------------------
 
          kg  =  alpha*((tmax-theg)/(tmax-1.d0))**gam
          dkg = -gam*kg/(tmax-theg)
-         phig  =  detf/theg - tcr
+         phig  =  the/theg - tcr
          dphig = -the/(theg**2.d0)
 
          res  = theg - theg_n - kg*phig*dtime
@@ -111,7 +113,7 @@ c...  ------------------------------------------------------------------
          if ((nitl.lt.20).and.(dabs(res).gt.xtol)) go to 200
          if (nitl.eq.20) print *, 'no local convergence! |r|=',dabs(res)
          
-         fac = kg*dtime/dres/(theg**(1.d0/3.d0)) ! coefficient for growth tangent
+         fac = kg*dtime/dres/(3*theg) ! coefficient for growth tangent
       
       else
          theg = theg_n
@@ -122,8 +124,8 @@ c...  end local newton iteration
 
 c...  update state variables 
       statev(1) = theg
-      statev(2) = detf/theg
-      statev(3) = detf
+      statev(2) = the/theg
+      statev(3) = the
            
 c...  calculate elastic tensor Fe = F * Fg^{-1}
       fe(1,1)=dfgrd1(1,1)/theg
@@ -156,16 +158,16 @@ c...  calculate Cauchy stress
       enddo      
 
 c...  calculate elastic and geometric tangent
-      ddsdde(1,1) = (lam + 2.d0*(lam*lnJe - mu))/detfe + 2.d0*stress(1)
-      ddsdde(2,2) = (lam + 2.d0*(lam*lnJe - mu))/detfe + 2.d0*stress(2)
-      ddsdde(3,3) = (lam + 2.d0*(lam*lnJe - mu))/detfe + 2.d0*stress(3)
+      ddsdde(1,1) = (lam - 2.d0*(lam*lnJe - mu))/detfe + 2.d0*stress(1)
+      ddsdde(2,2) = (lam - 2.d0*(lam*lnJe - mu))/detfe + 2.d0*stress(2)
+      ddsdde(3,3) = (lam - 2.d0*(lam*lnJe - mu))/detfe + 2.d0*stress(3)
       ddsdde(1,2) = (lam)/detfe
       ddsdde(1,3) = (lam)/detfe
       ddsdde(2,3) = (lam)/detfe
       ddsdde(1,4) = stress(4)
       ddsdde(2,4) = stress(4)
       ddsdde(3,4) = 0.d0
-      ddsdde(4,4) = (lam*lnJe - mu)/detfe + (stress(1) + stress(2))/2.d0
+      ddsdde(4,4) = -(lam*lnJe - mu)/detfe + (stress(1) + stress(2))/2.d0
       
       if (ntens.eq.6) then
         ddsdde(1,5) = stress(5)
@@ -174,8 +176,8 @@ c...  calculate elastic and geometric tangent
         ddsdde(1,6) = 0.d0
         ddsdde(2,6) = stress(6)
         ddsdde(3,6) = stress(6)
-        ddsdde(5,5) = (lam*lnJe - mu)/detfe + (stress(1) + stress(3))/2.d0
-        ddsdde(6,6) = (lam*lnJe - mu)/detfe + (stress(2) + stress(3))/2.d0
+        ddsdde(5,5) = -(lam*lnJe - mu)/detfe + (stress(1) + stress(3))/2.d0
+        ddsdde(6,6) = -(lam*lnJe - mu)/detfe + (stress(2) + stress(3))/2.d0
         ddsdde(4,5) = stress(6)/2.d0
         ddsdde(4,6) = stress(5)/2.d0
         ddsdde(5,6) = stress(4)/2.d0
