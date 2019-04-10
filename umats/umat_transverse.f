@@ -69,13 +69,12 @@ c...  material properties
 c...  local variables      
       integer i,j,nitl
       real*8  norm, xn(3), nn(6), ftn0(3)
-      real*8  fe(3,3), be(6), detfe, lnJe
+      real*8  fe(3,3), be(6), detfe, lnJe, detf, finv(3,3)
       real*8  the,lam,theg,lamg,theg_n,lamg_n
-      real*8  kg_the, phig_the, dkg_the, dphig_the, res_the, dres_the, fac_the
-      real*8  kg_lam, phig_lam, dkg_lam, dphig_lam, res_lam, dres_lam, fac_lam
+      real*8  kg_the, phig_the, dkg_the, dphig_the, res_the, dres_the, fac_the, phi_the
+      real*8  kg_lam, phig_lam, dkg_lam, dphig_lam, res_lam, dres_lam, fac_lam, phi_lam
       real*8  cg_the_ij(6),cg_the_kl(6),cg_lam_ij(6)
       real*8  xi(6),xtol
-      real*8  detf, finv(3,3),phi_the, phi_lam
       
       data xi/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
       xtol = 1.d-12
@@ -162,7 +161,7 @@ c...  ------------------------------------------------------------------
         if ((nitl.lt.20).and.(dabs(res_the).gt.xtol)) go to 200
         if (nitl.eq.20) print *, 'no local convergence in theta! |r|=',dabs(res_the)
         
-        fac_the = kg_the*dtime/detf/dres_the/theg**2.d0 ! coefficient for growth tangent
+        fac_the = kg_the*dtime/dres_the/theg**2.d0 ! coefficient for growth tangent
 
       else
         theg = theg_n
@@ -288,18 +287,18 @@ c...  calculate term #2 of area growth tangent
       cg_the_kl(6) = the*xi(6) - detf*detf/the*ftn0(2)*ftn0(3)
       
 c...  calculate term #1 of fiber growth tangent
-      cg_lam_ij(1) = (lambda*lnJe - lambda - mu)*xi(1) + mu*(be(1) - 2.d0*nn(1))
-      cg_lam_ij(2) = (lambda*lnJe - lambda - mu)*xi(2) + mu*(be(2) - 2.d0*nn(2))
-      cg_lam_ij(3) = (lambda*lnJe - lambda - mu)*xi(3) + mu*(be(3) - 2.d0*nn(3))
-      cg_lam_ij(4) = (lambda*lnJe - lambda - mu)*xi(4) + mu*(be(4) - 2.d0*nn(4))
-      cg_lam_ij(5) = (lambda*lnJe - lambda - mu)*xi(5) + mu*(be(5) - 2.d0*nn(5))
-      cg_lam_ij(6) = (lambda*lnJe - lambda - mu)*xi(6) + mu*(be(6) - 2.d0*nn(6))
+      cg_lam_ij(1) = (lambda*lnJe - lambda - mu)*xi(1) + mu*(be(1) - 2.d0*nn(1)/(lamg**2.d0))
+      cg_lam_ij(2) = (lambda*lnJe - lambda - mu)*xi(2) + mu*(be(2) - 2.d0*nn(2)/(lamg**2.d0))
+      cg_lam_ij(3) = (lambda*lnJe - lambda - mu)*xi(3) + mu*(be(3) - 2.d0*nn(3)/(lamg**2.d0))
+      cg_lam_ij(4) = (lambda*lnJe - lambda - mu)*xi(4) + mu*(be(4) - 2.d0*nn(4)/(lamg**2.d0))
+      cg_lam_ij(5) = (lambda*lnJe - lambda - mu)*xi(5) + mu*(be(5) - 2.d0*nn(5)/(lamg**2.d0))
+      cg_lam_ij(6) = (lambda*lnJe - lambda - mu)*xi(6) + mu*(be(6) - 2.d0*nn(6)/(lamg**2.d0))
 
 c...  compile tangent
       do i = 1,ntens
         do j = 1,ntens
             ddsdde(i,j) = ddsdde(i,j) 
-     &                    + fac_the*cg_the_ij(i)*cg_the_kl(j)
+     &                    + fac_the*cg_the_ij(i)*cg_the_kl(j)/detfe
      &                    + fac_lam*cg_lam_ij(i)*nn(j)/detfe
         enddo
       enddo

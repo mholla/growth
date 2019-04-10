@@ -66,10 +66,9 @@ c...  local variables
       integer i,j,nitl
       real*8  the, theg, theg_n, detf
       real*8  fe(3,3), be(6), detfe, lnJe
-      real*8  phig, phi_pos, phi_neg, kg, dkg, res, dres
-      real*8  trMe, fac, cg_ij(6), cg_kl(6)
+      real*8  phig, dphig, phi_pos, phi_neg, kg, dkg, res, dres
+      real*8  trMe, trMe_cr, fac, cg_ij(6), cg_kl(6)
       real*8  xi(6), xtol
-      real*8  trMe_cr, dphig
       
       data xi/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
       xtol = 1.d-12

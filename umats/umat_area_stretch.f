@@ -146,7 +146,7 @@ c...  ------------------------------------------------------------------
         if ((nitl.lt.20).and.(dabs(res).gt.xtol)) go to 200
         if (nitl.eq.20) print *, 'no local convergence! |r|=',dabs(res)
         
-        fac = kg*dtime/detf/dres/theg**2.d0 ! coefficient for growth tangent
+        fac = kg*dtime/dres/theg**2.d0 ! coefficient for growth tangent
 
       else
         theg = theg_n
@@ -241,7 +241,7 @@ c...  calculate growth tangent
 c...  compile tangent
       do i = 1,ntens
         do j = 1,ntens 
-          ddsdde(i,j) = ddsdde(i,j) + fac*cg_ij(i)*cg_kl(j)
+          ddsdde(i,j) = ddsdde(i,j) + fac*cg_ij(i)*cg_kl(j)/detfe
         enddo
       enddo
 

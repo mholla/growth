@@ -64,8 +64,7 @@ c...  variables passed in for information
       integer ntens,ndi,nshr,nstatv,nprops,noel,npt,kstep,kinc
 
 c...  material properties
-      real*8  lam,mu,cr(3),max(3), alpha(3), cr_pos(3), cr_neg(3), phi_pos(3)
-      real*8  phi_neg(3), tcr
+      real*8  lam, tcr, mu, cr(3), max(3), alpha(3), cr_pos(3), cr_neg(3), phi_pos(3), phi_neg(3) 
 
 c...  local variables      
       integer i,j,nitl
@@ -73,7 +72,7 @@ c...  local variables
       real*8  fginv(6),fe(3,3),detfe,be(6),lnJe
       real*8  detf,the(3),theg(3),theg_n(3)
       real*8  kg(3),dkg(3),phig(3),dphig(3),res(3),dres(3)
-      real*8  fac(3), cg_ij(6)
+      real*8  fac1(3), fac2(3), cg_ij(6)
       real*8  xi(6),xtol
 
       data xi/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
@@ -159,7 +158,7 @@ c       ------------------------------------------------------------------
 
         if (phig(i).eq.0.d0) then               ! no growth
           theg(i) = theg_n(i)
-          fac(i) = 0.d0  
+          fac1(i) = 0.d0  
         
         else                                 ! growth
 200       continue
@@ -178,7 +177,8 @@ c       ------------------------------------------------------------------
           if ((nitl.lt.20).and.(dabs(res(i)).gt.xtol)) go to 200
           if (nitl.eq.20) print *, 'no local convergence in ',i, '! |r|=', res(i)
             
-          fac(i) = kg(i)*dtime/dres(i)/theg(i)/the(i)/detf
+          fac1(i) = kg(i)*dtime/dres(i)/theg(i)/theg(i)/the(i)
+          fac2(i) = 2.d0*mu/theg(i)/theg(i)
             
         endif  
 c       ------------------------------------------------------------------
@@ -269,9 +269,9 @@ c...  compile tangent
       do i = 1,ntens
         do j = 1,ntens
           ddsdde(i,j) = ddsdde(i,j) 
-     &                + fac(1)*( cg_ij(i) - 2*mu*xxx(i,1) )*xxx(j,1)
-     &                + fac(2)*( cg_ij(i) - 2*mu*xxx(i,2) )*xxx(j,2)
-     &                + fac(3)*( cg_ij(i) - 2*mu*xxx(i,3) )*xxx(j,3)
+     &                + fac1(1)*( cg_ij(i) - fac2(i)*xxx(i,1) )*xxx(j,1)/detfe
+     &                + fac1(2)*( cg_ij(i) - fac2(i)*xxx(i,2) )*xxx(j,2)/detfe
+     &                + fac1(3)*( cg_ij(i) - fac2(i)*xxx(i,3) )*xxx(j,3)/detfe
         enddo
       enddo
 

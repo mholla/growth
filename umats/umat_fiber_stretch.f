@@ -69,10 +69,9 @@ c...  local variables
       real*8  norm, xn(3), nn(6)
       real*8  the, theg, theg_n, detf
       real*8  fe(3,3), be(6), detfe, lnJe
-      real*8  phig, phi_pos, phi_neg, kg, dkg, res, dres
+      real*8  phig, dphig, phi_pos, phi_neg, kg, dkg, res, dres, tcr
       real*8  fac, cg_ij(6)
       real*8  xi(6), xtol
-      real*8  tcr, dphig
     
       data xi/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
       xtol = 1.d-12
@@ -137,7 +136,7 @@ c...  ------------------------------------------------------------------
         theg = theg_n
         fac = 0.d0  
       
-      else if (phig.gt.0.d0) then       ! growth
+      else                              ! growth
  200    continue      
         nitl = nitl + 1
         j = 2
@@ -163,10 +162,7 @@ c...  ------------------------------------------------------------------
         if (nitl.eq.20) print *, "no local convergence! |r|=",dabs(res)
         
         fac = kg*dtime/dres/(theg**2.d0)/the  ! coefficient for growth tangent
-      
-      else
-        theg = theg_n
-        fac = 0.d0  
+ 
       endif
 c...  ------------------------------------------------------------------
 c...  end local newton iteration 
@@ -240,12 +236,12 @@ c...  use symmetry to fill in the rest
       enddo    
 
 c...  calculate term #1 of growth tangent
-      cg_ij(1) = (lam*lnJe - lam - mu)*xi(1) + mu*(be(1) - 2.d0*nn(1))
-      cg_ij(2) = (lam*lnJe - lam - mu)*xi(2) + mu*(be(2) - 2.d0*nn(2))
-      cg_ij(3) = (lam*lnJe - lam - mu)*xi(3) + mu*(be(3) - 2.d0*nn(3))
-      cg_ij(4) = (lam*lnJe - lam - mu)*xi(4) + mu*(be(4) - 2.d0*nn(4))
-      cg_ij(5) = (lam*lnJe - lam - mu)*xi(5) + mu*(be(5) - 2.d0*nn(5))
-      cg_ij(6) = (lam*lnJe - lam - mu)*xi(6) + mu*(be(6) - 2.d0*nn(6))
+      cg_ij(1) = (lam*lnJe - lam - mu)*xi(1) + mu*(be(1) - 2.d0*nn(1)/(theg**2.d0))
+      cg_ij(2) = (lam*lnJe - lam - mu)*xi(2) + mu*(be(2) - 2.d0*nn(2)/(theg**2.d0))
+      cg_ij(3) = (lam*lnJe - lam - mu)*xi(3) + mu*(be(3) - 2.d0*nn(3)/(theg**2.d0))
+      cg_ij(4) = (lam*lnJe - lam - mu)*xi(4) + mu*(be(4) - 2.d0*nn(4)/(theg**2.d0))
+      cg_ij(5) = (lam*lnJe - lam - mu)*xi(5) + mu*(be(5) - 2.d0*nn(5)/(theg**2.d0))
+      cg_ij(6) = (lam*lnJe - lam - mu)*xi(6) + mu*(be(6) - 2.d0*nn(6)/(theg**2.d0))
 
 c...  compile tangent
       do i = 1,ntens
