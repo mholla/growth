@@ -64,11 +64,11 @@ c...  variables passed in for information
       integer ntens,ndi,nshr,nstatv,nprops,noel,npt,kstep,kinc
 
 c...  material properties
-      real*8  lam,mu,cr(3),max(3),gam,alpha
+      real*8  lam, tcr, mu, cr(3), max(3), alpha(3), cr_pos(3), cr_neg(3), phi_pos(3), phi_neg(3) 
 
 c...  local variables      
       integer i,j,nitl
-      real*8  xx0(3,3),xx(3,3),xx(6,3),xx(6,3),norm
+      real*8  xx0(3,3),xx(3,3),xxx(6,3),norm
       real*8  fginv(6),fe(3,3),detfe,be(6),lnJe
       real*8  detf,the(3),theg(3),theg_n(3)
       real*8  kg(3),dkg(3),phig(3),dphig(3),res(3),dres(3)
@@ -125,15 +125,15 @@ c...    calculate deformed elastic normals
         xx(2,i) = dfgrd1(2,1)*xx0(1,i) + dfgrd1(2,2)*xx0(2,i) + dfgrd1(2,3)*xx0(3,i)
         xx(3,i) = dfgrd1(3,1)*xx0(1,i) + dfgrd1(3,2)*xx0(2,i) + dfgrd1(3,3)*xx0(3,i)
 
-        xxx(1,i) = xx(1)*xx(1)
-        xxx(2,i) = xx(2)*xx(2)
-        xxx(3,i) = xx(3)*xx(3)
-        xxx(4,i) = xx(1)*xx(2)
-        xxx(5,i) = xx(1)*xx(3)
-        xxx(6,i) = xx(2)*xx(3)
+        xxx(1,i) = xx(1,i)*xx(1,i)
+        xxx(2,i) = xx(2,i)*xx(2,i)
+        xxx(3,i) = xx(3,i)*xx(3,i)
+        xxx(4,i) = xx(1,i)*xx(2,i)
+        xxx(5,i) = xx(1,i)*xx(3,i)
+        xxx(6,i) = xx(2,i)*xx(3,i)
 
 c       calculate stretch in i-th direction              
-        the(i)  = sqrt(xx(1)*xx(1) + xx(2)*xx(2) + xx(3)*xx(3))
+        the(i)  = sqrt(xx(1,i)*xx(1,i) + xx(2,i)*xx(2,i) + xx(3,i)*xx(3,i))
             
 c       obtain state variable history
         theg_n(i) = statev(i)
@@ -158,7 +158,7 @@ c       ------------------------------------------------------------------
 
         if (phig(i).eq.0.d0) then               ! no growth
           theg(i) = theg_n(i)
-          fac(i) = 0.d0  
+          fac1(i) = 0.d0  
         
         else                                 ! growth
 200       continue
@@ -177,7 +177,7 @@ c       ------------------------------------------------------------------
           if ((nitl.lt.20).and.(dabs(res(i)).gt.xtol)) go to 200
           if (nitl.eq.20) print *, 'no local convergence in ',i, '! |r|=', res(i)
             
-          fac1(i) = kg*dtime/dres(i)/theg(i)/theg(i)/the(i)
+          fac1(i) = kg(i)*dtime/dres(i)/theg(i)/theg(i)/the(i)
           fac2(i) = 2.d0*mu/theg(i)/theg(i)
             
         endif  
@@ -186,22 +186,22 @@ c       end local newton iteration
 
 c       update state variables
         statev(i) = theg(i)
-        statev(i+3) = the(i)/theg(i)     
+        statev(i+3) = the(i)    
       
       enddo
 c     ------------------------------------------------------------------
 c...  end growth in orthotropic directions
 
 c...  calculate elastic tensor Fe = F * Fg^{-1}
-      fe(1,1) = xx(1,1)*xx(1,1)/theg(1) + xx(1,2)*xx(1,2)/theg(2) + xx(1,3)*xx(1,3)/theg(3) 
-      fe(1,2) = xx(1,1)*xx(2,1)/theg(1) + xx(1,2)*xx(2,2)/theg(2) + xx(1,3)*xx(2,3)/theg(3) 
-      fe(1,3) = xx(1,1)*xx(3,1)/theg(1) + xx(1,2)*xx(3,2)/theg(2) + xx(1,3)*xx(3,3)/theg(3) 
-      fe(2,1) = xx(2,1)*xx(1,1)/theg(1) + xx(2,2)*xx(1,2)/theg(2) + xx(2,3)*xx(1,3)/theg(3) 
-      fe(2,2) = xx(2,1)*xx(2,1)/theg(1) + xx(2,2)*xx(2,2)/theg(2) + xx(2,3)*xx(2,3)/theg(3) 
-      fe(2,3) = xx(2,1)*xx(3,1)/theg(1) + xx(2,2)*xx(3,2)/theg(2) + xx(2,3)*xx(3,3)/theg(3) 
-      fe(3,1) = xx(3,1)*xx(1,1)/theg(1) + xx(3,2)*xx(1,2)/theg(2) + xx(3,3)*xx(1,3)/theg(3) 
-      fe(3,2) = xx(3,1)*xx(2,1)/theg(1) + xx(3,2)*xx(2,2)/theg(2) + xx(3,3)*xx(2,3)/theg(3) 
-      fe(3,3) = xx(3,1)*xx(3,1)/theg(1) + xx(3,2)*xx(3,2)/theg(2) + xx(3,3)*xx(3,3)/theg(3) 
+      fe(1,1) = xx(1,1)*xx0(1,1)/theg(1) + xx(1,2)*xx0(1,2)/theg(2) + xx(1,3)*xx0(1,3)/theg(3) 
+      fe(1,2) = xx(1,1)*xx0(2,1)/theg(1) + xx(1,2)*xx0(2,2)/theg(2) + xx(1,3)*xx0(2,3)/theg(3) 
+      fe(1,3) = xx(1,1)*xx0(3,1)/theg(1) + xx(1,2)*xx0(3,2)/theg(2) + xx(1,3)*xx0(3,3)/theg(3) 
+      fe(2,1) = xx(2,1)*xx0(1,1)/theg(1) + xx(2,2)*xx0(1,2)/theg(2) + xx(2,3)*xx0(1,3)/theg(3) 
+      fe(2,2) = xx(2,1)*xx0(2,1)/theg(1) + xx(2,2)*xx0(2,2)/theg(2) + xx(2,3)*xx0(2,3)/theg(3) 
+      fe(2,3) = xx(2,1)*xx0(3,1)/theg(1) + xx(2,2)*xx0(3,2)/theg(2) + xx(2,3)*xx0(3,3)/theg(3) 
+      fe(3,1) = xx(3,1)*xx0(1,1)/theg(1) + xx(3,2)*xx0(1,2)/theg(2) + xx(3,3)*xx0(1,3)/theg(3) 
+      fe(3,2) = xx(3,1)*xx0(2,1)/theg(1) + xx(3,2)*xx0(2,2)/theg(2) + xx(3,3)*xx0(2,3)/theg(3) 
+      fe(3,3) = xx(3,1)*xx0(3,1)/theg(1) + xx(3,2)*xx0(3,2)/theg(2) + xx(3,3)*xx0(3,3)/theg(3) 
 
 c...  calculate determinant of elastic deformation gradient
       detfe = +fe(1,1)*(fe(2,2)*fe(3,3)-fe(2,3)*fe(3,2))
@@ -226,16 +226,16 @@ c...  calculate Cauchy stress
       enddo
       
 c...  calculate elastic and geometric tangent
-      ddsdde(1,1) = (lam + 2.d0*(lam*lnJe - mu))/detfe + 2.d0*stress(1)
-      ddsdde(2,2) = (lam + 2.d0*(lam*lnJe - mu))/detfe + 2.d0*stress(2)
-      ddsdde(3,3) = (lam + 2.d0*(lam*lnJe - mu))/detfe + 2.d0*stress(3)
+      ddsdde(1,1) = (lam - 2.d0*(lam*lnJe - mu))/detfe + 2.d0*stress(1)
+      ddsdde(2,2) = (lam - 2.d0*(lam*lnJe - mu))/detfe + 2.d0*stress(2)
+      ddsdde(3,3) = (lam - 2.d0*(lam*lnJe - mu))/detfe + 2.d0*stress(3)
       ddsdde(1,2) = (lam)/detfe
       ddsdde(1,3) = (lam)/detfe
       ddsdde(2,3) = (lam)/detfe
       ddsdde(1,4) = stress(4)
       ddsdde(2,4) = stress(4)
       ddsdde(3,4) = 0.d0
-      ddsdde(4,4) = (lam*lnJe - mu)/detfe + (stress(1) + stress(2))/2.d0
+      ddsdde(4,4) = -(lam*lnJe - mu)/detfe + (stress(1) + stress(2))/2.d0
       
       if (ntens.eq.6) then
         ddsdde(1,5) = stress(5)
@@ -244,8 +244,8 @@ c...  calculate elastic and geometric tangent
         ddsdde(1,6) = 0.d0
         ddsdde(2,6) = stress(6)
         ddsdde(3,6) = stress(6)
-        ddsdde(5,5) = (lam*lnJe - mu)/detfe + (stress(1) + stress(3))/2.d0
-        ddsdde(6,6) = (lam*lnJe - mu)/detfe + (stress(2) + stress(3))/2.d0
+        ddsdde(5,5) = -(lam*lnJe - mu)/detfe + (stress(1) + stress(3))/2.d0
+        ddsdde(6,6) = -(lam*lnJe - mu)/detfe + (stress(2) + stress(3))/2.d0
         ddsdde(4,5) = stress(6)/2.d0
         ddsdde(4,6) = stress(5)/2.d0
         ddsdde(5,6) = stress(4)/2.d0
@@ -269,9 +269,9 @@ c...  compile tangent
       do i = 1,ntens
         do j = 1,ntens
           ddsdde(i,j) = ddsdde(i,j) 
-     &                + fac(1)*( cg_ij(i) - fac2(i)*xxx(i,1) )*xxx(j,1)/detfe
-     &                + fac(2)*( cg_ij(i) - fac2(i)*xxx(i,2) )*xxx(j,2)/detfe
-     &                + fac(3)*( cg_ij(i) - fac2(i)*xxx(i,3) )*xxx(j,3)/detfe
+     &                + fac1(1)*( cg_ij(i) - fac2(i)*xxx(i,1) )*xxx(j,1)/detfe
+     &                + fac1(2)*( cg_ij(i) - fac2(i)*xxx(i,2) )*xxx(j,2)/detfe
+     &                + fac1(3)*( cg_ij(i) - fac2(i)*xxx(i,3) )*xxx(j,3)/detfe
         enddo
       enddo
 
