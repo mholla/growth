@@ -132,7 +132,7 @@ c...  ------------------------------------------------------------------
         phig = 0.d0
       endif
 
-      if (phi.eq.0.d0) then             ! no growth
+      if (phig.eq.0.d0) then             ! no growth
         theg = theg_n
         fac = 0.d0  
       
@@ -173,15 +173,15 @@ c...  update state variables
       statev(3) = the
     
 c...  calculate elastic tensor Fe = F + ((1-theg)/theg)*(f \otimes f0)
-      fe(1,1) = dfgrd1(1,1) + ((1.d0-theg)/theg)*(xf(1)*xf0(1))
-      fe(1,2) = dfgrd1(1,2) + ((1.d0-theg)/theg)*(xf(1)*xf0(2))
-      fe(1,3) = dfgrd1(1,3) + ((1.d0-theg)/theg)*(xf(1)*xf0(3))
-      fe(2,1) = dfgrd1(2,1) + ((1.d0-theg)/theg)*(xf(2)*xf0(1))
-      fe(2,2) = dfgrd1(2,2) + ((1.d0-theg)/theg)*(xf(2)*xf0(2)) 
-      fe(2,3) = dfgrd1(2,3) + ((1.d0-theg)/theg)*(xf(2)*xf0(3))
-      fe(3,1) = dfgrd1(3,1) + ((1.d0-theg)/theg)*(xf(3)*xf0(1))
-      fe(3,2) = dfgrd1(3,2) + ((1.d0-theg)/theg)*(xf(3)*xf0(2))
-      fe(3,3) = dfgrd1(3,3) + ((1.d0-theg)/theg)*(xf(3)*xf0(3))
+      fe(1,1) = dfgrd1(1,1) + ((1.d0-theg)/theg)*(xn(1)*xn0(1))
+      fe(1,2) = dfgrd1(1,2) + ((1.d0-theg)/theg)*(xn(1)*xn0(2))
+      fe(1,3) = dfgrd1(1,3) + ((1.d0-theg)/theg)*(xn(1)*xn0(3))
+      fe(2,1) = dfgrd1(2,1) + ((1.d0-theg)/theg)*(xn(2)*xn0(1))
+      fe(2,2) = dfgrd1(2,2) + ((1.d0-theg)/theg)*(xn(2)*xn0(2)) 
+      fe(2,3) = dfgrd1(2,3) + ((1.d0-theg)/theg)*(xn(2)*xn0(3))
+      fe(3,1) = dfgrd1(3,1) + ((1.d0-theg)/theg)*(xn(3)*xn0(1))
+      fe(3,2) = dfgrd1(3,2) + ((1.d0-theg)/theg)*(xn(3)*xn0(2))
+      fe(3,3) = dfgrd1(3,3) + ((1.d0-theg)/theg)*(xn(3)*xn0(3))
      
       detfe = +fe(1,1)*(fe(2,2)*fe(3,3)-fe(2,3)*fe(3,2))
      #        -fe(1,2)*(fe(2,1)*fe(3,3)-fe(2,3)*fe(3,1))
