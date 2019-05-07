@@ -129,16 +129,16 @@ c...  calculate Cauchy stress
       enddo   
 
 c...  elastic and geometric tangent
-      ddsdde(1,1) = (lam + 2.d0*(lam*lnJe - mu))/detfe + 2.d0*stress(1)
-      ddsdde(2,2) = (lam + 2.d0*(lam*lnJe - mu))/detfe + 2.d0*stress(2)
-      ddsdde(3,3) = (lam + 2.d0*(lam*lnJe - mu))/detfe + 2.d0*stress(3)
+      ddsdde(1,1) = (lam - 2.d0*(lam*lnJe - mu))/detfe + 2.d0*stress(1)
+      ddsdde(2,2) = (lam - 2.d0*(lam*lnJe - mu))/detfe + 2.d0*stress(2)
+      ddsdde(3,3) = (lam - 2.d0*(lam*lnJe - mu))/detfe + 2.d0*stress(3)
       ddsdde(1,2) = (lam)/detfe
       ddsdde(1,3) = (lam)/detfe
       ddsdde(2,3) = (lam)/detfe
       ddsdde(1,4) = stress(4)
       ddsdde(2,4) = stress(4)
       ddsdde(3,4) = 0.d0
-      ddsdde(4,4) = (lam*lnJe - mu)/detfe + (stress(1) + stress(2))/2.d0
+      ddsdde(4,4) = -(lam*lnJe - mu)/detfe + (stress(1) + stress(2))/2.d0
       
       if (ntens.eq.6) then
         ddsdde(1,5) = stress(5)
@@ -147,8 +147,8 @@ c...  elastic and geometric tangent
         ddsdde(1,6) = 0.d0
         ddsdde(2,6) = stress(6)
         ddsdde(3,6) = stress(6)
-        ddsdde(5,5) = (lam*lnJe - mu)/detfe + (stress(1) + stress(3))/2.d0
-        ddsdde(6,6) = (lam*lnJe - mu)/detfe + (stress(2) + stress(3))/2.d0
+        ddsdde(5,5) = -(lam*lnJe - mu)/detfe + (stress(1) + stress(3))/2.d0
+        ddsdde(6,6) = -(lam*lnJe - mu)/detfe + (stress(2) + stress(3))/2.d0
         ddsdde(4,5) = stress(6)/2.d0
         ddsdde(4,6) = stress(5)/2.d0
         ddsdde(5,6) = stress(4)/2.d0
