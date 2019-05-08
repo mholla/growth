@@ -78,7 +78,7 @@ c...  initialize material parameters
       mu      = props(2)              ! shear modulus
       alpha   = props(3)              ! growth rate
       cr_pos  = props(4)              ! critical stress for positive growth
-      cr_neg  = props(4)              ! critical stress for negative growth
+      cr_neg  = props(5)              ! critical stress for negative growth
       
 c...  calculate determinant of deformation gradient
       detf = +dfgrd1(1,1)*(dfgrd1(2,2)*dfgrd1(3,3)-dfgrd1(2,3)*dfgrd1(3,2))
