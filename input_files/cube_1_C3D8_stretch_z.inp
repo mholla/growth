@@ -67,7 +67,7 @@ Cube with 1 linear element pulled in the z direction
    7
 *Nset, nset=FIXED_Z, internal, instance=PART-1-1
    3, 4
-*Nset, nset=STRETCHED_X, instance=PART-1-1
+*Nset, nset=STRETCHED_Z, instance=PART-1-1
    1, 2, 5, 6
 **
 *End Assembly
@@ -79,9 +79,9 @@ Cube with 1 linear element pulled in the z direction
 ** 
 *Material, name=MAT
 *Depvar
-    ?,
-*User Material, constants=?, unsymm
-    ?, ?
+    6,
+*User Material, constants=8, unsymm
+    0.577, 0.385, 0, 0, 1, 0.2, 1.2, 0
 *Initial Conditions, Type=Solution, User
 ** 
 **
@@ -114,9 +114,9 @@ FIXED_Z, 3, 3
 *Amplitude, name=Amp-1
    0.,   0.,     1.,   1.,     10.,   1.
 **
-** Name: STRETCHED_X Type: Displacement/Rotation
+** Name: STRETCHED_Z Type: Displacement/Rotation
 *Boundary, amplitude=Amp-1
-STRETCHED_X, 1, 1, 0.25
+STRETCHED_Z, 3, 3, 0.25
 **
 **
 *********************************************************************
@@ -141,7 +141,7 @@ EVOL, SDV
 *Output, history, variable=PRESELECT
 **
 ** HISTORY OUTPUT: H-Output-2
-*Element Output, elset=ALL
+*Element Output, elset=PART-1-1.ALL
 SDV
 **
 *End Step

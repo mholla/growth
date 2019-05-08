@@ -2192,9 +2192,9 @@
 ** 
 *Material, name=MAT
 *Depvar
-    ?,
-*User Material, constants=?, unsymm
-    ?, ?
+    3,
+*User Material, constants=3, unsymm
+    0.577, 0.385, 0.002
 *Initial Conditions, Type=Solution, User
 ** 
 **
@@ -2247,7 +2247,7 @@ EVOL, SDV
 *Output, history, variable=PRESELECT
 **
 ** HISTORY OUTPUT: H-Output-2
-*Element Output, elset=ALL
+*Element Output, elset=PART-1-1.ALL
 SDV
 **
 *End Step

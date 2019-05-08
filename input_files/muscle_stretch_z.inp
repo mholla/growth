@@ -14560,6 +14560,8 @@ Bicep muscle and tendon pulled axially
  1, 2423, 1
 *Elset, elset=SET-2, internal, generate
  2424, 11816, 1
+*Elset, elset=ALL, internal, generate
+   1, 11816, 1
 **
 ** Section: Section-1
 *Solid Section, elset=SET-1, material=MAT-1
@@ -14589,9 +14591,6 @@ Bicep muscle and tendon pulled axially
 *Nset, nset=FIXED, internal, generate, instance=PART-1-1
    388, 808, 1
 **
-*Elset, elset=ALL, internal, generate, instance=PART-1-1
-   1, 11816, 1
-**
 *End Assembly
 ** 
 **
@@ -14601,17 +14600,17 @@ Bicep muscle and tendon pulled axially
 **
 *Material, name=MAT-1
 *Depvar
-    ?,
-*User Material, constants=?, unsymm
-    ?, ?
+    6,
+*User Material, constants=8, unsymm
+    1.714, 1.277, 0, 0, 1, 0, 10, 0
 *Initial Conditions, Type=Solution, User
 ** 
 **
 ***Material, name=MAT-2
 *Depvar
-    ?,
-*User Material, constants=?, unsymm
-    ?, ?
+    6,
+*User Material, constants=8, unsymm
+    0.714, 0.179, 0, 0, 1, 0.25, 2, 0
 *Initial Conditions, Type=Solution, User
 ** 
 **
@@ -14668,7 +14667,7 @@ SDV
 *Output, history, variable=PRESELECT
 **
 ** HISTORY OUTPUT: H-Output-2
-*Element Output, elset=ALL
+*Element Output, elset=PART-1-1.ALL
 SDV
 **
 *End Step
