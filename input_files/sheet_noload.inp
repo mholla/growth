@@ -2193,8 +2193,8 @@
 *Material, name=MAT
 *Depvar
     3,
-*User Material, constants=3, unsymm
-    0.577, 0.385, 0.002
+*User Material, constants=6, unsymm
+    0.577, 0.385, 0, 1, 0, 0.02
 *Initial Conditions, Type=Solution, User
 ** 
 **
