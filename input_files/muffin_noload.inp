@@ -4858,9 +4858,9 @@ Muffin (height=3) with pinned EBC on lower part
 ** 
 *Material, name=MAT
 *Depvar
-    ?,
-*User Material, constants=?, unsymm
-    ?, ?
+    3,
+*User Material, constants=3, unsymm
+    0.577, 0.385, 0.002
 *Initial Conditions, Type=Solution, User
 ** 
 **
@@ -4883,7 +4883,7 @@ BOTTOM, PINNED
 ** 
 *Step, name=Step-1, nlgeom=YES, inc=10000
 *Static
-10, 2000., 1, 10.
+10, 400., 1, 10.
 **
 **
 *********************************************************************
@@ -4908,7 +4908,7 @@ EVOL, SDV
 *Output, history, variable=PRESELECT
 **
 ** HISTORY OUTPUT: H-Output-2
-*Element Output, elset=ALL
+*Element Output, elset=Part-1-1.ALL
 SDV
 **
 *End Step

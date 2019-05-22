@@ -5021,9 +5021,9 @@
 ** 
 *Material, name=MAT
 *Depvar
-    ?,
-*User Material, constants=?, unsymm
-    ?, ?
+    3,
+*User Material, constants=6, unsymm
+    0.577, 0.385, 0, 1, 0, 0.2
 *Initial Conditions, Type=Solution, User
 ** 
 **
