@@ -1,6 +1,8 @@
 # growth
 
-| Input files                               | Umat files           |
+This repo contains the growth codes (Abaqus UMAT subroutines) described in the [Hitchhiker's Guide to Abaqus](https://zenodo.org/record/1243270).  Simple, geometrically-relevant input files are included for each UMAT, such that the pairs listed in the table below should run together.  
+
+| Input files                               | UMAT files           |
 |-------------------------------------------|----------------------|
 | cube_1_C3D8_noload.inp                    | umat_fiber_morph.f   |
 | cube_1_C3D8_stretch_y.inp                 | umat_fiber_stretch.f |
