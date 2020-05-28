@@ -1,6 +1,8 @@
 # growth
 
-This repo contains the growth codes (Abaqus UMAT subroutines) described in the [Hitchhiker's Guide to Abaqus](https://zenodo.org/record/1243270).  Simple, geometrically-relevant input files are included for each UMAT, such that the pairs listed in the table below should run together.  
+This repo contains the growth codes (Abaqus UMAT subroutines) described in the [Hitchhiker's Guide to Abaqus](https://zenodo.org/record/1243270).  If you find these helpful, please include the Hitchhiker's Guide in your attributions.
+
+Simple, geometrically-relevant input files are included for each UMAT, such that the pairs listed in the table below should run together.  
 
 | Input files                               | UMAT files           |
 |-------------------------------------------|----------------------|
