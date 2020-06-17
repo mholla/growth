@@ -24,3 +24,5 @@ Simple, geometrically-relevant input files are included for each UMAT, such that
 | cube_1_C3D8_stretch_xyz_iso_Mandel.inp    | umat_iso_Mandel.f    |
 | cube_1_C3D8_stretch_xyz_transverse.inp    | umat_transverse.f    |
 | cube_1_C3D8_stretch_xyz_ortho_stretch.inp | umat_ortho_stretch.f |
+
+[![DOI](https://zenodo.org/badge/146362714.svg)](https://zenodo.org/badge/latestdoi/146362714)
